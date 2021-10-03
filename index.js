@@ -23,29 +23,69 @@ function gen_trace(level) {
     return `${file}:${line}:${func_name}`
 }
 
+const ERROR = 3
+const WARN  = 4
+const INFO  = 5
+const DEBUG = 7
+
+const levels = {}
+levels[ERROR] = 'ERROR'
+levels[WARN]  = 'WARN'
+levels[INFO]  = 'INFO'
+levels[DEBUG] = 'DEBUG'
+
 const logger = {
-    ERROR: 3,
-    WARN: 4,
-    INFO: 5,
-    DEBUG: 7,
+    ERROR: ERROR,
+    WARN: WARN,
+    INFO: INFO,
+    DEBUG: DEBUG,
 
     level: 7,
 
-    levels: {
-        3: 'ERROR',
-        4: 'WARN',
-        5: 'INFO',
-        7: 'DEBUG',
+    levels: levels,
+
+    out_func: (level, msg) => {
+        console.log(`${m().format("YYYY-MM-DD HH:mm:ss.SSS")} ${logger.levels[level]} ${msg}`)
     },
-    log: (level, msg) => {
-        if(level <= logger.level) {
-            console.log(`${m().format("YYYY-MM-DD HH:mm:ss.SSS")} ${logger.levels[level]} ${gen_trace(2)}: ${msg}`)
+
+    error: (msg) => {
+        if(ERROR <= logger.level) {
+            const trace = gen_trace(2)
+            logger.out_func(ERROR, `${trace} ${msg}`)
         }
     },
-    set_log_function: log_function => {
-        logger.log = (level, msg) => {
+
+    warn: (msg) => {
+        if(WARN <= logger.level) {
             const trace = gen_trace(2)
-            log_function(level, `${trace} ${msg}`)
+            logger.out_func(WARN, `${trace} ${msg}`)
+        }
+    },
+
+    info: (msg) => {
+        if(INFO <= logger.level) {
+            const trace = gen_trace(2)
+            logger.out_func(INFO, `${trace} ${msg}`)
+        }
+    },
+
+    debug: (msg) => {
+        if(DEBUG <= logger.level) {
+            const trace = gen_trace(2)
+            logger.out_func(DEBUG, `${trace} ${msg}`)
+        }
+    },
+
+    log: (level, msg) => {
+        if(level <= logger.level) {
+            const trace = gen_trace(2)
+            logger.out_func(level, `${trace} ${msg}`)
+        }
+    },
+
+    set_log_function: log_function => {
+        logger.out_func = (level, msg) => {
+            log_function(level, msg)
         }
     },
 }
