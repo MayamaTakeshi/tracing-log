@@ -1,5 +1,5 @@
 # tracing-log
-A simple tracing log to be used in my nodejs modules. 
+A simple tracing logger. 
 
 It will include FILE_NAME:LINE_NUMBER:FUNCTION_NAME in each log line.
 ```
@@ -10,8 +10,20 @@ npm install tracing-log
 
 Logging:
 ```
-const tl = require('../index.js')
-tl.log(tl.ERROR, "something bad happened")
+const tl = require('tracing-log')
+
+// pass log level as parameter or use log level functions:
+
+tl.log(tl.ERROR, "some error msg")
+tl.log(tl.WARN, "some warn msg")
+tl.log(tl.INFO, "some info msg")
+tl.log(tl.DEBUG, "some debug msg")
+
+tl.error("some error msg")
+tl.warn("some warn msg")
+tl.info("some info msg")
+tl.debug("some debug msg")
+
 ```
 
 Setting log level:
