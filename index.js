@@ -34,7 +34,7 @@ levels[WARN]  = 'WARN'
 levels[INFO]  = 'INFO'
 levels[DEBUG] = 'DEBUG'
 
-const logger = {
+const tracing_log = {
     ERROR: ERROR,
     WARN: WARN,
     INFO: INFO,
@@ -45,49 +45,55 @@ const logger = {
     levels: levels,
 
     out_func: (level, msg) => {
-        console.log(`${m().format("YYYY-MM-DD HH:mm:ss.SSS")} ${logger.levels[level]} ${msg}`)
+        console.log(`${m().format("YYYY-MM-DD HH:mm:ss.SSS")} ${tracing_log.levels[level]} ${msg}`)
     },
 
-    error: (msg) => {
-        if(ERROR <= logger.level) {
-            const trace = gen_trace(2)
-            logger.out_func(ERROR, `${trace} ${msg}`)
-        }
-    },
-
-    warn: (msg) => {
-        if(WARN <= logger.level) {
-            const trace = gen_trace(2)
-            logger.out_func(WARN, `${trace} ${msg}`)
-        }
-    },
-
-    info: (msg) => {
-        if(INFO <= logger.level) {
-            const trace = gen_trace(2)
-            logger.out_func(INFO, `${trace} ${msg}`)
-        }
-    },
-
-    debug: (msg) => {
-        if(DEBUG <= logger.level) {
-            const trace = gen_trace(2)
-            logger.out_func(DEBUG, `${trace} ${msg}`)
-        }
-    },
-
+    /*
     log: (level, msg) => {
-        if(level <= logger.level) {
+        if(level <= trancing_log.level) {
             const trace = gen_trace(2)
-            logger.out_func(level, `${trace} ${msg}`)
+            tracing_log.out_func(level, `${trace} ${msg}`)
         }
     },
+    */
 
     set_log_function: log_function => {
-        logger.out_func = (level, msg) => {
+        tracing_log.out_func = (level, msg) => {
             log_function(level, msg)
+        }
+    },
+
+    gen_logger: id => {
+        return {
+            error: (msg) => {
+                if(ERROR <= tracing_log.level) {
+                    const trace = gen_trace(2)
+                    tracing_log.out_func(ERROR, `${trace} ${id} ${msg}`)
+                }
+            },
+
+            warn: (msg) => {
+                if(WARN <= tracing_log.level) {
+                    const trace = gen_trace(2)
+                    tracing_log.out_func(WARN, `${trace} ${id} ${msg}`)
+                }
+            },
+
+            info: (msg) => {
+                if(INFO <= tracing_log.level) {
+                    const trace = gen_trace(2)
+                    tracing_log.out_func(INFO, `${trace} ${id} ${msg}`)
+                }
+            },
+
+            debug: (msg) => {
+                if(DEBUG <= tracing_log.level) {
+                    const trace = gen_trace(2)
+                    tracing_log.out_func(DEBUG, `${trace} ${id} ${msg}`)
+                }
+            },
         }
     },
 }
 
-module.exports = logger
+module.exports = tracing_log
