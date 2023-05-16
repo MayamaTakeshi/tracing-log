@@ -13,13 +13,27 @@ function getStack() {
     return stack
 }
 
+function gen_file_path(fullPath) {
+    const nodeModulesIndex = fullPath.indexOf('node_modules')
+
+    if (nodeModulesIndex !== -1) {
+        const pathAfterNodeModules = fullPath.substring(nodeModulesIndex + 13)
+        return pathAfterNodeModules
+    }
+
+    // Generate a relative path based on the working folder
+    const workingFolder = process.cwd()
+    const relativePath = path.relative(workingFolder, fullPath)
+    return relativePath
+}
+
 function gen_trace(level) {
     const stack = getStack()
     const item = stack[level]
     const func_name = item.getFunctionName()
     const line = item.getLineNumber()
-    const tokens = item.getFileName().split(path.sep)
-    const file = tokens[tokens.length-1]
+    //const tokens = item.getFileName().split(path.sep)
+    const file = gen_file_path(item.getFileName())
     return `${file}:${line}:${func_name}`
 }
 
